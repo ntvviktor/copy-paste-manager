@@ -1,0 +1,346 @@
+/* The window itself is transparent; the rounded .panel below is the visible app. */
+
+:root {
+  --bg: rgba(248, 248, 250, 0.96);
+  --bg-raised: rgba(0, 0, 0, 0.035);
+  --border: rgba(0, 0, 0, 0.1);
+  --text: #16171a;
+  --text-dim: rgba(22, 23, 26, 0.5);
+  --accent: #2f6df6;
+  --accent-text: #ffffff;
+  --danger: #c2341d;
+  --radius: 12px;
+  --row-height: 34px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: rgba(24, 25, 28, 0.96);
+    --bg-raised: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f2f3f5;
+    --text-dim: rgba(242, 243, 245, 0.5);
+    --accent: #3f7dff;
+    --accent-text: #ffffff;
+    --danger: #ff6b57;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  /* Chrome-free overlay: nothing here should be selectable or draggable. */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+body {
+  font:
+    13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+    sans-serif;
+  color: var(--text);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------------------------------------------------------------- search */
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+.search-icon {
+  width: 14px;
+  text-align: center;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+#search-input {
+  flex: 1 1 auto;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  padding: 0;
+  /* Readonly by design: main.ts owns the keymap, including typing. */
+  pointer-events: none;
+}
+
+#search-input::placeholder {
+  color: var(--text-dim);
+}
+
+.filter-chip {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: var(--bg-raised);
+  color: var(--text-dim);
+}
+
+body.searching .filter-chip,
+body.searching .search-icon {
+  color: var(--accent);
+}
+
+.count {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  min-width: 48px;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------- banner */
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+.banner span {
+  flex: 1 1 auto;
+}
+
+.banner button {
+  font: inherit;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------- body */
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--row-height);
+  padding: 0 8px;
+  border-radius: 7px;
+  white-space: nowrap;
+}
+
+.row.selected {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.row.selected .meta,
+.row.selected .ordinal {
+  color: color-mix(in srgb, var(--accent-text) 72%, transparent);
+}
+
+.ordinal {
+  width: 10px;
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.glyph {
+  width: 18px;
+  flex: 0 0 auto;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.row.selected .glyph {
+  color: var(--accent-text);
+}
+
+.thumb {
+  width: 26px;
+  height: 18px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+}
+
+.label {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+.empty {
+  padding: 18px 10px;
+  color: var(--text-dim);
+  text-align: center;
+  font-size: 12px;
+}
+
+/* ---------------------------------------------------------------- preview */
+
+.preview {
+  border-left: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview-text {
+  flex: 1 1 auto;
+  margin: 0;
+  overflow: hidden;
+  font:
+    11.5px/1.5 ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+
+.preview-image {
+  flex: 1 1 auto;
+  min-height: 0;
+  object-fit: contain;
+  object-position: center top;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.preview-meta {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.hints {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  padding: 7px 12px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-dim);
+  flex: 0 0 auto;
+}
+
+kbd {
+  font: inherit;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- help */
+
+.help {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 6px 24px;
+  overflow-y: auto;
+}
+
+.help-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.help-row kbd {
+  flex: 0 0 84px;
+  text-align: center;
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- toast */
+
+.toast {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 36px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+[hidden] {
+  display: none !important;
+}

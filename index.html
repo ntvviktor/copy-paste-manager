@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClipVim</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="panel">
+      <header class="search" id="search-bar">
+        <span class="search-icon" id="search-icon">⌘</span>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Press / to search"
+          autocomplete="off"
+          spellcheck="false"
+          tabindex="-1"
+        />
+        <span class="filter-chip" id="filter-chip">all</span>
+        <span class="count" id="count"></span>
+      </header>
+
+      <div class="banner" id="permission-banner" hidden>
+        <span
+          >Accessibility permission is needed to paste into other apps.</span
+        >
+        <button id="grant-button" type="button">Open Settings</button>
+      </div>
+
+      <div class="body">
+        <ul class="list" id="list" role="listbox" aria-label="Clipboard history"></ul>
+        <section class="preview" id="preview"></section>
+      </div>
+
+      <footer class="hints" id="hints">
+        <kbd>j</kbd><kbd>k</kbd> move <kbd>⏎</kbd> paste <kbd>y</kbd> copy
+        <kbd>d</kbd> delete <kbd>/</kbd> search <kbd>⇥</kbd> filter
+        <kbd>?</kbd> help <kbd>esc</kbd> close
+      </footer>
+
+      <div class="help" id="help" hidden></div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
