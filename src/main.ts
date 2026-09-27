@@ -59,14 +59,14 @@ function showError(message: string) {
 
 // ---------------------------------------------------------------- data
 
-async function refresh() {
+async function refresh({ keepSelection = true } = {}) {
   try {
     entries = await invoke<ClipEntry[]>("list_history");
   } catch (err) {
     showError(String(err));
     entries = [];
   }
-  applyFilter({ keepSelection: true });
+  applyFilter({ keepSelection });
 }
 
 function applyFilter({ keepSelection }: { keepSelection: boolean }) {
@@ -482,14 +482,21 @@ async function checkPermissions() {
 void listen("history-changed", () => void refresh());
 
 void listen("popup-shown", () => {
-  // Reappear in a known state rather than wherever the user left off.
+  // Reappear in a known state rather than wherever the user left off, with the
+  // cursor on the newest entry: that is the one you almost always want, and it
+  // makes the popup a one-key paste.
   query = "";
   mode = "list";
   filter = "all";
   pendingG = false;
   helpOpen = false;
   renderHelp();
-  void refresh();
+
+  // Reset against the entries already in hand so the cursor is at the top in
+  // the first painted frame. `refresh` then replaces the list; awaiting it
+  // first would show the previous selection until the IPC round trip lands.
+  applyFilter({ keepSelection: false });
+  void refresh({ keepSelection: false });
   void checkPermissions();
 });
 
